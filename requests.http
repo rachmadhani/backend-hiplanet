@@ -1,0 +1,18 @@
+### Health Check Endpoint
+GET http://localhost:3000/api/status
+
+### DB Connection & Query Test Endpoint
+GET http://localhost:3000/api/test
+
+### Get All Users Endpoint
+GET http://localhost:3000/api/users
+
+### Create a User Endpoint
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "username": "tester",
+  "email": "tester@hiplanet.com",
+  "password": "securepassword123"
+}

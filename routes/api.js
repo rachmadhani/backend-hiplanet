@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
+const testerApplicationController = require('../controllers/testerApplicationController');
+const { protect } = require('../middlewares/authMiddleware');
 
 // Healthcheck endpoint
 router.get('/status', (req, res) => {
@@ -31,8 +34,18 @@ router.get('/test', async (req, res) => {
   }
 });
 
-// User routes
-router.get('/users', userController.getAllUsers);
-router.post('/users', userController.createUser);
+// Authentication routes
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+
+// User routes (Protected)
+router.get('/users', protect, userController.getAllUsers);
+router.post('/users', protect, userController.createUser);
+
+// Tester Application routes
+router.post('/tester-applications', testerApplicationController.createApplication); // Public
+router.get('/tester-applications', protect, testerApplicationController.getAllApplications); // Protected
+router.put('/tester-applications/:id', protect, testerApplicationController.updateApplication); // Protected
+router.delete('/tester-applications/:id', protect, testerApplicationController.deleteApplication); // Protected
 
 module.exports = router;

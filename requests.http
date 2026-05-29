@@ -16,3 +16,56 @@ Content-Type: application/json
   "email": "tester@hiplanet.com",
   "password": "securepassword123"
 }
+
+### User Register Endpoint
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "email": "newuser@hiplanet.com",
+  "password": "newpassword123"
+}
+
+### User Login Endpoint
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "identifier": "newuser@hiplanet.com",
+  "password": "newpassword123"
+}
+
+### Get All Users Endpoint (Protected - Copy token from Login response)
+GET http://localhost:3000/api/users
+Authorization: Bearer <your-jwt-token-here>
+
+### Submit Tester Application (Public)
+POST http://localhost:3000/api/tester-applications
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "name": "SuperPlayer",
+  "platform": "Windows",
+  "why": "I have played 500 hours of roguelites and love game balancing.",
+  "country": "South Korea",
+  "nda": true
+}
+
+### Get All Tester Applications (Protected - Copy token from Login response)
+GET http://localhost:3000/api/tester-applications
+Authorization: Bearer <your-jwt-token-here>
+
+### Update Tester Application (Protected - Copy token from Login response)
+PUT http://localhost:3000/api/tester-applications/1
+Content-Type: application/json
+Authorization: Bearer <your-jwt-token-here>
+
+{
+  "status": "approved"
+}
+
+### Delete Tester Application (Protected - Copy token from Login response)
+DELETE http://localhost:3000/api/tester-applications/1
+Authorization: Bearer <your-jwt-token-here>

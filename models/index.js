@@ -1,9 +1,11 @@
 const sequelize = require('../config/database');
 const User = require('./user');
+const TesterApplication = require('./testerApplication');
 
 const db = {
   sequelize,
-  User
+  User,
+  TesterApplication
 };
 
 // Define associations/relationships here if needed

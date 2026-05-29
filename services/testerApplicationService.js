@@ -1,4 +1,5 @@
 const { TesterApplication } = require('../models');
+const emailService = require('./emailService');
 
 class TesterApplicationService {
   async createApplication(data) {
@@ -73,6 +74,7 @@ class TesterApplicationService {
       throw error;
     }
 
+    const previousStatus = application.status;
     const { email, name, platform, why, country, nda, status } = updateData;
 
     if (email !== undefined) application.email = email;
@@ -84,6 +86,13 @@ class TesterApplicationService {
     if (status !== undefined) application.status = status;
 
     await application.save();
+
+    // Send welcome email if status transitions to 'approved'
+    if (application.status === 'approved' && previousStatus !== 'approved') {
+      emailService.sendWelcomeEmail(application.email, application.name)
+        .catch(err => console.error('Failed to send welcome email in background:', err.message));
+    }
+
     return application;
   }
 

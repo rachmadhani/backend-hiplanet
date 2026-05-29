@@ -42,10 +42,26 @@ class TesterApplicationService {
     });
   }
 
-  async getAllApplications() {
-    return await TesterApplication.findAll({
+  async getAllApplications(query = {}) {
+    const page = parseInt(query.page) || 1;
+    const limit = parseInt(query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await TesterApplication.findAndCountAll({
+      limit,
+      offset,
       order: [['createdAt', 'DESC']]
     });
+
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      totalItems: count,
+      applications: rows,
+      totalPages,
+      currentPage: page,
+      limit
+    };
   }
 
   async updateApplication(id, updateData) {

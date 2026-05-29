@@ -230,12 +230,29 @@ paths:
           description: Validation error
     get:
       summary: List all tester applications
-      description: Retrieve all beta test applications. Protected by JWT.
+      description: Retrieve all beta test applications. Protected by JWT. Supports pagination.
       security:
         - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Maximum number of applications to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+            example: 10
       responses:
         '200':
-          description: List of applications
+          description: List of applications retrieved successfully with pagination details
           content:
             application/json:
               schema:
@@ -248,6 +265,21 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TesterApplication'
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 3
+                      currentPage:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
         '401':
           description: Unauthorized
   /tester-applications/{id}:

@@ -22,11 +22,17 @@ exports.createApplication = async (req, res) => {
 // Get all applications (Protected - Admin)
 exports.getAllApplications = async (req, res) => {
   try {
-    const applications = await testerApplicationService.getAllApplications();
+    const result = await testerApplicationService.getAllApplications(req.query);
 
     return res.status(200).json({
       success: true,
-      data: applications
+      data: result.applications,
+      pagination: {
+        totalItems: result.totalItems,
+        totalPages: result.totalPages,
+        currentPage: result.currentPage,
+        limit: result.limit
+      }
     });
   } catch (error) {
     console.error('Get all applications error:', error);

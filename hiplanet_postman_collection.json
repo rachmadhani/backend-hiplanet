@@ -157,12 +157,24 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/tester-applications",
+              "raw": "{{baseUrl}}/tester-applications?page=1&limit=10",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "tester-applications"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (starts at 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                }
               ]
             }
           },

@@ -82,6 +82,25 @@ exports.getBlogById = async (req, res) => {
   }
 };
 
+// Get single blog by slug (Public)
+exports.getBlogBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const blog = await ecoNewsBlogService.getBlogBySlug(slug);
+
+    return res.status(200).json({
+      success: true,
+      data: blog
+    });
+  } catch (error) {
+    console.error('Get blog by slug error:', error);
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to fetch blog post'
+    });
+  }
+};
+
 // Update an existing blog post
 exports.updateBlog = async (req, res) => {
   try {

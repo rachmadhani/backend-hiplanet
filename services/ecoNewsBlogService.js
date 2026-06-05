@@ -26,7 +26,7 @@ class EcoNewsBlogService {
    * Create a new blog post
    */
   async createBlog(data, file) {
-    const { title, author, description, category, date_created } = data;
+    const { title, author, description, category, slug, date_created } = data;
 
     // Validation
     if (!title || !title.trim()) {
@@ -49,6 +49,11 @@ class EcoNewsBlogService {
       error.statusCode = 400;
       throw error;
     }
+    if (!slug || !slug.trim()) {
+      const error = new Error('Slug is required.');
+      error.statusCode = 400;
+      throw error;
+    }
 
     let imagePath = null;
     if (file) {
@@ -60,6 +65,7 @@ class EcoNewsBlogService {
       author,
       description,
       category,
+      slug,
       image: imagePath,
       date_created: date_created || new Date()
     });
@@ -132,6 +138,21 @@ class EcoNewsBlogService {
   }
 
   /**
+   * Get a single blog by slug
+   */
+  async getBlogBySlug(slug) {
+    const blog = await EcoNewsBlog.findOne({ where: { slug } });
+
+    if (!blog) {
+      const error = new Error('Blog post not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return blog;
+  }
+
+  /**
    * Update an existing blog post
    */
   async updateBlog(id, updateData, file) {
@@ -143,13 +164,14 @@ class EcoNewsBlogService {
       throw error;
     }
 
-    const { title, author, description, category, date_created } = updateData;
+    const { title, author, description, category, slug, date_created } = updateData;
 
     // Apply text field updates if provided
     if (title !== undefined) blog.title = title;
     if (author !== undefined) blog.author = author;
     if (description !== undefined) blog.description = description;
     if (category !== undefined) blog.category = category;
+    if (slug !== undefined) blog.slug = slug;
     if (date_created !== undefined) blog.date_created = date_created;
 
     // Handle new image upload

@@ -467,6 +467,7 @@ paths:
                 - author
                 - description
                 - category
+                - slug
               properties:
                 title:
                   type: string
@@ -481,6 +482,9 @@ paths:
                 category:
                   type: string
                   example: Nature
+                slug:
+                  type: string
+                  example: planting-trees-for-the-future
                 image:
                   type: string
                   format: binary
@@ -567,6 +571,9 @@ paths:
                 category:
                   type: string
                   example: Action
+                slug:
+                  type: string
+                  example: updated-planting-trees
                 image:
                   type: string
                   format: binary
@@ -707,6 +714,9 @@ components:
         category:
           type: string
           example: Nature
+        slug:
+          type: string
+          example: planting-trees-for-the-future
         image:
           type: string
           nullable: true

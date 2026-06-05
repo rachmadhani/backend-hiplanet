@@ -35,6 +35,14 @@ const EcoNewsBlog = sequelize.define('EcoNewsBlog', {
       notEmpty: { msg: 'Category is required' }
     }
   },
+  slug: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      notEmpty: { msg: 'Slug is required' }
+    }
+  },
   image: {
     type: DataTypes.STRING,
     allowNull: true

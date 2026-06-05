@@ -52,6 +52,7 @@ router.delete('/tester-applications/:id', protect, testerApplicationController.d
 
 // EcoNews Blog routes
 router.get('/econews-blogs', ecoNewsBlogController.getAllBlogs); // Public
+router.get('/econews-blogs/slug/:slug', ecoNewsBlogController.getBlogBySlug); // Public
 router.get('/econews-blogs/:id', ecoNewsBlogController.getBlogById); // Public
 router.post('/econews-blogs', protect, uploadImage('image'), ecoNewsBlogController.createBlog); // Protected
 router.put('/econews-blogs/:id', protect, uploadImage('image'), ecoNewsBlogController.updateBlog); // Protected

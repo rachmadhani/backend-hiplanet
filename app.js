@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const apiRoutes = require('./routes/api');
 
 const app = express();
@@ -29,6 +30,9 @@ app.use(express.json());
 
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static upload files
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Register routes
 app.use('/api', apiRoutes);

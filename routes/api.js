@@ -3,7 +3,9 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const testerApplicationController = require('../controllers/testerApplicationController');
+const ecoNewsBlogController = require('../controllers/ecoNewsBlogController');
 const { protect } = require('../middlewares/authMiddleware');
+const { uploadImage } = require('../middlewares/uploadMiddleware');
 
 // Healthcheck endpoint
 router.get('/status', (req, res) => {
@@ -47,5 +49,12 @@ router.post('/tester-applications', testerApplicationController.createApplicatio
 router.get('/tester-applications', protect, testerApplicationController.getAllApplications); // Protected
 router.put('/tester-applications/:id', protect, testerApplicationController.updateApplication); // Protected
 router.delete('/tester-applications/:id', protect, testerApplicationController.deleteApplication); // Protected
+
+// EcoNews Blog routes
+router.get('/econews-blogs', ecoNewsBlogController.getAllBlogs); // Public
+router.get('/econews-blogs/:id', ecoNewsBlogController.getBlogById); // Public
+router.post('/econews-blogs', protect, uploadImage('image'), ecoNewsBlogController.createBlog); // Protected
+router.put('/econews-blogs/:id', protect, uploadImage('image'), ecoNewsBlogController.updateBlog); // Protected
+router.delete('/econews-blogs/:id', protect, ecoNewsBlogController.deleteBlog); // Protected
 
 module.exports = router;

@@ -632,6 +632,255 @@ paths:
           description: Unauthorized
         '404':
           description: Blog post not found
+  /devlog-categories:
+    get:
+      summary: Get all devlog categories
+      description: Retrieve a list of devlog categories. Public access.
+      responses:
+        '200':
+          description: List of categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DevlogCategory'
+    post:
+      summary: Create a new devlog category
+      description: Add a new devlog category. Protected by JWT.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - slug
+              properties:
+                name:
+                  type: string
+                  example: General
+                slug:
+                  type: string
+                  example: general
+                description:
+                  type: string
+                  example: General devlog updates
+      responses:
+        '201':
+          description: Devlog category created successfully
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+  /devlog-categories/{id}:
+    get:
+      summary: Get a devlog category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Devlog category retrieved
+        '404':
+          description: Not found
+    put:
+      summary: Update a devlog category
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                slug:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Updated successfully
+    delete:
+      summary: Delete a devlog category
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted successfully
+  /devlog-blogs:
+    get:
+      summary: Get all devlog posts
+      description: Retrieve a list of devlog posts. Public access. Supports searching, filtering by category_id, and pagination.
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: category_id
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of devlog posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DevlogBlog'
+    post:
+      summary: Create a new devlog post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - author
+                - description
+                - category_id
+                - slug
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                description:
+                  type: string
+                category_id:
+                  type: integer
+                slug:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                date_created:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: Created successfully
+  /devlog-blogs/{id}:
+    get:
+      summary: Get a devlog post by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Devlog post details
+    put:
+      summary: Update a devlog post
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                description:
+                  type: string
+                category_id:
+                  type: integer
+                slug:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                date_created:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Updated successfully
+    delete:
+      summary: Delete a devlog post
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted successfully
+  /devlog-blogs/slug/{slug}:
+    get:
+      summary: Get a devlog post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Devlog post details
 components:
   securitySchemes:
     BearerAuth:
@@ -733,3 +982,58 @@ components:
           type: string
           format: date-time
           example: '2026-06-04T12:00:00.000Z'
+    DevlogCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: General
+        slug:
+          type: string
+          example: general
+        description:
+          type: string
+          example: General devlog updates
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    DevlogBlog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Devlog 1
+        author:
+          type: string
+          example: Admin
+        description:
+          type: string
+          example: <p>First update</p>
+        category_id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: devlog-1
+        image:
+          type: string
+          nullable: true
+          example: /uploads/image.png
+        date_created:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

@@ -4,6 +4,8 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const testerApplicationController = require('../controllers/testerApplicationController');
 const ecoNewsBlogController = require('../controllers/ecoNewsBlogController');
+const devlogCategoryController = require('../controllers/devlogCategoryController');
+const devlogBlogController = require('../controllers/devlogBlogController');
 const { protect } = require('../middlewares/authMiddleware');
 const { uploadImage } = require('../middlewares/uploadMiddleware');
 
@@ -57,5 +59,20 @@ router.get('/econews-blogs/:id', ecoNewsBlogController.getBlogById); // Public
 router.post('/econews-blogs', protect, uploadImage('image'), ecoNewsBlogController.createBlog); // Protected
 router.put('/econews-blogs/:id', protect, uploadImage('image'), ecoNewsBlogController.updateBlog); // Protected
 router.delete('/econews-blogs/:id', protect, ecoNewsBlogController.deleteBlog); // Protected
+
+// Devlog Category routes
+router.get('/devlog-categories', devlogCategoryController.getAllCategories); // Public
+router.get('/devlog-categories/:id', devlogCategoryController.getCategoryById); // Public
+router.post('/devlog-categories', protect, devlogCategoryController.createCategory); // Protected
+router.put('/devlog-categories/:id', protect, devlogCategoryController.updateCategory); // Protected
+router.delete('/devlog-categories/:id', protect, devlogCategoryController.deleteCategory); // Protected
+
+// Devlog Blog routes
+router.get('/devlog-blogs', devlogBlogController.getAllBlogs); // Public
+router.get('/devlog-blogs/slug/:slug', devlogBlogController.getBlogBySlug); // Public
+router.get('/devlog-blogs/:id', devlogBlogController.getBlogById); // Public
+router.post('/devlog-blogs', protect, uploadImage('image'), devlogBlogController.createBlog); // Protected
+router.put('/devlog-blogs/:id', protect, uploadImage('image'), devlogBlogController.updateBlog); // Protected
+router.delete('/devlog-blogs/:id', protect, devlogBlogController.deleteBlog); // Protected
 
 module.exports = router;

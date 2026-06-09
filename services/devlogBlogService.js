@@ -106,6 +106,7 @@ class DevlogBlogService {
 
     const { count, rows } = await DevlogBlog.findAndCountAll({
       where: whereClause,
+      attributes: { exclude: ['description'] },
       limit,
       offset,
       order,

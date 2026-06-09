@@ -106,6 +106,7 @@ class EcoNewsBlogService {
 
     const { count, rows } = await EcoNewsBlog.findAndCountAll({
       where: whereClause,
+      attributes: { exclude: ['description'] },
       limit,
       offset,
       order

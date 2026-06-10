@@ -21,7 +21,7 @@ transporter.verify((error) => {
 });
 
 class EmailService {
-  async sendWelcomeEmail(toEmail, toName) {
+  async sendWelcomeEmail(toEmail, toName, build_platform = 'Windows') {
     const subject = `You're in - ${process.env.GAME_NAME || 'Hi Planet'} Closed Beta Build`;
 
     // Plain text version (fallback)
@@ -70,7 +70,7 @@ Thanks for helping shape ${process.env.GAME_NAME || 'Hi Planet'}.
   <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border-left: 4px solid #ff6b35; border-radius: 0 8px 8px 0;">
     <h3 style="margin-top: 0; color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;">Download the Build</h3>
     <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">(Available for Windows 10+ / macOS 12+)</p>
-    <a href="${process.env.DOWNLOAD_URL || '#'}" style="display: inline-block; padding: 12px 24px; background-color: #ff6b35; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(255, 107, 53, 0.2);">▶ Download Closed Beta Build</a>
+    <a href="${build_platform === 'Windows' ? process.env.DOWNLOAD_URL_WINDOWS : process.env.DOWNLOAD_URL_MAC || '#'}" style="display: inline-block; padding: 12px 24px; background-color: #ff6b35; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(255, 107, 53, 0.2);">▶ Download Closed Beta Build</a>
   </div>
   
   <div style="margin-bottom: 25px;">

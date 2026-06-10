@@ -42,6 +42,14 @@ const TesterApplication = sequelize.define('TesterApplication', {
     validate: {
       isIn: [['pending', 'approved', 'rejected']]
     }
+  },
+  build_platform: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'MacOS',
+    validate: {
+      isIn: [['MacOS', 'Windows']]
+    }
   }
 }, {
   tableName: 'tester_applications',

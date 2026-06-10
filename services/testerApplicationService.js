@@ -75,7 +75,7 @@ class TesterApplicationService {
     }
 
     const previousStatus = application.status;
-    const { email, name, platform, why, country, nda, status } = updateData;
+    const { email, name, platform, why, country, nda, status, build_platform } = updateData;
 
     if (email !== undefined) application.email = email;
     if (name !== undefined) application.name = name;
@@ -84,12 +84,13 @@ class TesterApplicationService {
     if (country !== undefined) application.country = country;
     if (nda !== undefined) application.nda = nda;
     if (status !== undefined) application.status = status;
+    if (build_platform !== undefined) application.build_platform = build_platform;
 
     await application.save();
 
     // Send welcome email if status transitions to 'approved'
-    if (application.status === 'approved' && previousStatus !== 'approved') {
-      emailService.sendWelcomeEmail(application.email, application.name)
+    if (application.status === 'approved' && previousStatus !== 'approved' && application.build_platform !== null) {
+      emailService.sendWelcomeEmail(application.email, application.name, application.build_platform)
         .catch(err => console.error('Failed to send welcome email in background:', err.message));
     }
 

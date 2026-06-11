@@ -32,6 +32,13 @@ class TesterApplicationService {
       throw error;
     }
 
+    const existing = await TesterApplication.findOne({ where: { email } });
+    if (existing) {
+      const error = new Error('user has been registered');
+      error.statusCode = 400;
+      throw error;
+    }
+
     return await TesterApplication.create({
       email,
       name,
@@ -108,6 +115,52 @@ class TesterApplicationService {
 
     await application.destroy();
     return true;
+  }
+
+  async sendBuildUpdateToSingle(id, buildVersion, patchNotes) {
+    if (!buildVersion || !buildVersion.trim()) {
+      const error = new Error('Build version is required.');
+      error.statusCode = 400;
+      throw error;
+    }
+    if (!patchNotes || !patchNotes.trim()) {
+      const error = new Error('Patch notes are required.');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const tester = await TesterApplication.findByPk(id);
+
+    if (!tester) {
+      const error = new Error('Tester application not found.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (tester.status !== 'approved') {
+      const error = new Error('Tester application is not approved.');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const success = await emailService.sendBuildUpdateEmail(
+      tester.email,
+      tester.name,
+      buildVersion,
+      patchNotes,
+      tester.build_platform
+    );
+
+    if (!success) {
+      const error = new Error('Failed to send build update email.');
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: `Build update email sent to ${tester.email}`
+    };
   }
 }
 

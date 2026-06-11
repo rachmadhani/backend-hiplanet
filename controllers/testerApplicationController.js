@@ -81,3 +81,24 @@ exports.deleteApplication = async (req, res) => {
     });
   }
 };
+
+// Send build update email to a single approved tester (Protected - Admin)
+exports.sendBuildUpdateToSingle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { buildVersion, patchNotes } = req.body;
+    const result = await testerApplicationService.sendBuildUpdateToSingle(id, buildVersion, patchNotes);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Build update email sent successfully',
+      data: result
+    });
+  } catch (error) {
+    console.error('Send build update error:', error);
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to send build update email'
+    });
+  }
+};

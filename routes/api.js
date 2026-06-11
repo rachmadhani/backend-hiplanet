@@ -51,6 +51,7 @@ router.post('/tester-applications', testerApplicationController.createApplicatio
 router.get('/tester-applications', protect, testerApplicationController.getAllApplications); // Protected
 router.put('/tester-applications/:id', protect, testerApplicationController.updateApplication); // Protected
 router.delete('/tester-applications/:id', protect, testerApplicationController.deleteApplication); // Protected
+router.post('/tester-applications/:id/send-build-update', protect, testerApplicationController.sendBuildUpdateToSingle); // Protected
 
 // EcoNews Blog routes
 router.get('/econews-blogs', ecoNewsBlogController.getAllBlogs); // Public

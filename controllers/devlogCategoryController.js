@@ -1,5 +1,34 @@
 const devlogCategoryService = require('../services/devlogCategoryService');
 
+/**
+ * Format database and validation errors into user-friendly responses
+ */
+const handleSequelizeError = (error, defaultMessage) => {
+  if (error.name === 'SequelizeUniqueConstraintError') {
+    return {
+      status: 400,
+      message: 'A category with this URL slug already exists.'
+    };
+  }
+  if (error.name === 'SequelizeValidationError') {
+    const messages = error.errors.map(err => err.message).join(', ');
+    return {
+      status: 400,
+      message: messages
+    };
+  }
+  if (error.name === 'SequelizeDatabaseError' && error.message.includes('Data too long')) {
+    return {
+      status: 400,
+      message: 'The slug or another field is too long for the database limit.'
+    };
+  }
+  return {
+    status: error.statusCode || 500,
+    message: error.message || defaultMessage
+  };
+};
+
 exports.createCategory = async (req, res) => {
   try {
     const category = await devlogCategoryService.createCategory(req.body);
@@ -10,9 +39,10 @@ exports.createCategory = async (req, res) => {
     });
   } catch (error) {
     console.error('Create category error:', error);
-    return res.status(error.statusCode || 500).json({
+    const errRes = handleSequelizeError(error, 'Failed to create category');
+    return res.status(errRes.status).json({
       success: false,
-      message: error.message || 'Failed to create category'
+      message: errRes.message
     });
   }
 };
@@ -61,9 +91,10 @@ exports.updateCategory = async (req, res) => {
     });
   } catch (error) {
     console.error('Update category error:', error);
-    return res.status(error.statusCode || 500).json({
+    const errRes = handleSequelizeError(error, 'Failed to update category');
+    return res.status(errRes.status).json({
       success: false,
-      message: error.message || 'Failed to update category'
+      message: errRes.message
     });
   }
 };

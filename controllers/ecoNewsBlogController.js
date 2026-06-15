@@ -3,6 +3,35 @@ const fs = require('fs');
 const path = require('path');
 
 /**
+ * Format database and validation errors into user-friendly responses
+ */
+const handleSequelizeError = (error, defaultMessage) => {
+  if (error.name === 'SequelizeUniqueConstraintError') {
+    return {
+      status: 400,
+      message: 'A blog post with this URL slug already exists.'
+    };
+  }
+  if (error.name === 'SequelizeValidationError') {
+    const messages = error.errors.map(err => err.message).join(', ');
+    return {
+      status: 400,
+      message: messages
+    };
+  }
+  if (error.name === 'SequelizeDatabaseError' && error.message.includes('Data too long')) {
+    return {
+      status: 400,
+      message: 'The slug or another field is too long for the database limit.'
+    };
+  }
+  return {
+    status: error.statusCode || 500,
+    message: error.message || defaultMessage
+  };
+};
+
+/**
  * Helper to delete a file that was just uploaded (used on errors)
  */
 const cleanupFile = (file) => {
@@ -32,9 +61,10 @@ exports.createBlog = async (req, res) => {
     cleanupFile(req.file);
     
     console.error('Create blog error:', error);
-    return res.status(error.statusCode || 500).json({
+    const errRes = handleSequelizeError(error, 'Failed to create blog post');
+    return res.status(errRes.status).json({
       success: false,
-      message: error.message || 'Failed to create blog post'
+      message: errRes.message
     });
   }
 };
@@ -117,9 +147,10 @@ exports.updateBlog = async (req, res) => {
     cleanupFile(req.file);
 
     console.error('Update blog error:', error);
-    return res.status(error.statusCode || 500).json({
+    const errRes = handleSequelizeError(error, 'Failed to update blog post');
+    return res.status(errRes.status).json({
       success: false,
-      message: error.message || 'Failed to update blog post'
+      message: errRes.message
     });
   }
 };
